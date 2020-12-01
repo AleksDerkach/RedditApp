@@ -12,7 +12,7 @@ public class TopNews {
 
     public TopNews(String author, int dateCreated, String thumbnailUrl, int comments, String imageUrl) {
         mAuthor = author;
-        mMillisecondsDate = dateCreated;
+        mMillisecondsDate = dateCreated*1000;
         mThumbnail = thumbnailUrl;
         mComments = comments;
         mImageUrl = imageUrl;

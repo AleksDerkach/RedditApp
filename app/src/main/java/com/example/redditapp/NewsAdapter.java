@@ -1,19 +1,12 @@
 package com.example.redditapp;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +16,7 @@ import androidx.annotation.Nullable;
 
 public class NewsAdapter extends ArrayAdapter<TopNews> {
 
-    public NewsAdapter(@NonNull Context context, @NonNull List<TopNews> topNewsObjects) {
+    public NewsAdapter(@NonNull Context context, List<TopNews> topNewsObjects) {
         super(context, 0, topNewsObjects);
     }
 
@@ -52,7 +45,6 @@ public class NewsAdapter extends ArrayAdapter<TopNews> {
 
         //image
         ImageView imageView = ListItemView.findViewById(R.id.imageNews);
-        //imageView.setImageDrawable(Drawable.createFromPath(currentTopNews.getThumbnailUrl()));
         ImageManager.fetchImage(currentTopNews.getThumbnailUrl(), imageView);
 
         //quantity comments

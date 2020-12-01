@@ -2,17 +2,19 @@ package com.example.redditapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayAdapter mAdapter;
+    private NewsAdapter mAdapter;
     private static final String USGS_REQUEST_URL = "https://www.reddit.com/top.json";
 
     @Override
@@ -20,24 +22,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        List<TopNews> listNews = new ArrayList<>();
-//        listNews.add(new TopNews("Author", "01/11/2020", ,"10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-//        listNews.add(new TopNews("Author", "01/11/2020", "10"));
-
         ListView listView = findViewById(R.id.mainList);
-        mAdapter = new NewsAdapter(this, listNews);
+        mAdapter = new NewsAdapter(this, new ArrayList<TopNews>());
         listView.setAdapter(mAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                TopNews currTopNews = mAdapter.getItem(position);
+                Uri topNewsUri = Uri.parse(currTopNews.getImageUrl());
+
+                Intent websiteIntent = new Intent(Intent.ACTION_VIEW, topNewsUri);
+                startActivity(websiteIntent);
+            }
+        });
 
         TopNewsAsyncTask task = new TopNewsAsyncTask();
         task.execute(USGS_REQUEST_URL);
