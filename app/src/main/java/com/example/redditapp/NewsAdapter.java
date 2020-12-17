@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,12 +93,10 @@ public class NewsAdapter extends ArrayAdapter<TopNews> {
                             new String[]{
                             Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1
                     );
-                    int position = (Integer) view.getTag();
-                    //TopNews currentTopNews = getItem(position);
-                    //ImageView currentImageView = currentTopNews.getThumbnailUrl();
-                    //View viewP = (View) mImageView.getParent();
-                    //ImageView currentImageView = viewP.findViewById(R.id.imageNews);
-                    saveImageToGallery(mImageView);
+                    LinearLayout linLayout = (LinearLayout) view.getParent();
+                    LinearLayout linLayout2 = (LinearLayout) linLayout.getParent();
+                    ImageView currentImageView = (ImageView) linLayout2.getChildAt(0);
+                    saveImageToGallery(currentImageView);
                 } else {
 
                 }
