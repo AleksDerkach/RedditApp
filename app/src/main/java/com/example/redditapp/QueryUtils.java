@@ -135,7 +135,7 @@ public final class QueryUtils {
 
                 JSONObject properties = topNewsArrayItem.getJSONObject("data");
                 String authorJson = properties.getString("author");
-                int dateCreatedJson  = properties.getInt("created");
+                long dateCreatedJson  = properties.getInt("created");
                 int num_commentsJson = properties.getInt("num_comments");
                 String thumbnailJson = properties.getString("thumbnail");
                 String urlJson = properties.getString("url");

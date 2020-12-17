@@ -1,18 +1,17 @@
 package com.example.redditapp;
 
-import android.graphics.drawable.Drawable;
 
 public class TopNews {
 
     private String mAuthor;
-    private int mMillisecondsDate;
+    private long mMillisecondsDate;
     private String mThumbnail;
     private int mComments;
     private String mImageUrl;
 
-    public TopNews(String author, int dateCreated, String thumbnailUrl, int comments, String imageUrl) {
+    public TopNews(String author, long dateCreated, String thumbnailUrl, int comments, String imageUrl) {
         mAuthor = author;
-        mMillisecondsDate = dateCreated*1000;
+        mMillisecondsDate = dateCreated;
         mThumbnail = thumbnailUrl;
         mComments = comments;
         mImageUrl = imageUrl;
@@ -27,7 +26,7 @@ public class TopNews {
         return mThumbnail;
     }
 
-    public int getDateInMilliseconds() {
+    public long getDateInMilliseconds() {
         return mMillisecondsDate;
     }
 
