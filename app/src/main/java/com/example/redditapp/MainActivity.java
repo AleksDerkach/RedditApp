@@ -1,13 +1,11 @@
 package com.example.redditapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.app.Activity;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,9 +15,9 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<TopNews>> {
 
-    //private ImageView mImageView;
+    private  static  final int EARTHQUAKE_LOADER_ID = 1;
     private NewsAdapter mAdapter;
     private static final String USGS_REQUEST_URL = "https://www.reddit.com/top.json";
 
@@ -27,16 +25,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ActivityCompat.requestPermissions(MainActivity.this ,
-                new String[]{
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1
-        );
-
-        ActivityCompat.requestPermissions(MainActivity.this ,
-                new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE}, 1
-        );
 
         ListView listView = findViewById(R.id.mainList);
         mAdapter = new NewsAdapter(this, new ArrayList<TopNews>());
@@ -53,66 +41,56 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TopNewsAsyncTask task = new TopNewsAsyncTask();
-        task.execute(USGS_REQUEST_URL);
+//        TopNewsAsyncTask task = new TopNewsAsyncTask();
+//        task.execute(USGS_REQUEST_URL);
 
-        //mImageView = listView.findViewById(R.id.imageNews);
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
 
-//        Button btnSaveToG = listView.findViewById(R.id.btnSave);
-//
-//        View.OnClickListener clickListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                saveImageToGallery();
-//            }
-//        };
-//        btnSaveToG.setOnClickListener(clickListener);
     }
 
-//    private void saveImageToGallery() {
-//        //to get the image from the ImageView (say iv)
-//        BitmapDrawable draw = (BitmapDrawable) mImageView.getDrawable();
-//        Bitmap bitmap = draw.getBitmap();
+    @Override
+    public Loader<List<TopNews>> onCreateLoader(int i, Bundle bundle) {
+        return new RedditLoader(this, USGS_REQUEST_URL);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<TopNews>> loader, List<TopNews> topNews) {
+        mAdapter.clear();
+        View loadingIndicator = findViewById(R.id.loading_indicator);
+        loadingIndicator.setVisibility(View.GONE);
+
+        if (topNews != null && !topNews.isEmpty()) {
+            mAdapter.addAll(topNews);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<TopNews>> loader) {
+        mAdapter.clear();
+    }
+
+//    private class TopNewsAsyncTask extends AsyncTask<String, Void, List<TopNews>> {
 //
-//        FileOutputStream outStream = null;
-//        File sdCard = Environment.getExternalStorageDirectory();
-//        File dir = new File(sdCard.getAbsolutePath() + "/MyPics");
-//        dir.mkdirs();
-//        String fileName = String.format("%d.jpg", System.currentTimeMillis());
-//        File outFile = new File(dir, fileName);
-//        try {
-//            outStream = new FileOutputStream(outFile);
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-//            outStream.flush();
-//            outStream.close();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
+//        @Override
+//        protected List<TopNews> doInBackground(String... urls) {
+//            if (urls.length < 1 || urls[0] == null) {
+//                return null;
+//            }
+//
+//            List<TopNews> result = QueryUtils.fetchEarthquakeData(urls[0]);
+//            return result;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<TopNews> data) {
+//            super.onPostExecute(data);
+//
+//            mAdapter.clear();
+//
+//            if (data != null && !data.isEmpty()) {
+//                mAdapter.addAll(data);
+//            }
 //        }
 //    }
-
-    private class TopNewsAsyncTask extends AsyncTask<String, Void, List<TopNews>> {
-
-        @Override
-        protected List<TopNews> doInBackground(String... urls) {
-            if (urls.length < 1 || urls[0] == null) {
-                return null;
-            }
-
-            List<TopNews> result = QueryUtils.fetchEarthquakeData(urls[0]);
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(List<TopNews> data) {
-            super.onPostExecute(data);
-
-            mAdapter.clear();
-
-            if (data != null && !data.isEmpty()) {
-                mAdapter.addAll(data);
-            }
-        }
-    }
 }
